@@ -1,7 +1,10 @@
 const app = require("express")()
 const port = 8080
 const swaggerUi = require("swagger-ui-express")
-const swaggerDocument = require("./docs/swagger.json")
+const yamljs = require("yamljs")
+const swaggerDocument = yamljs.load("./docs/swagger.yaml")
+//const swaggerDocument = require("./docs/swagger.json")
+
 
 const games = [
     { id: 1, name: "Witcher 3", price: 29.99 },
@@ -18,11 +21,13 @@ app.get("/games", (req, res) => {
 app.get("/games/:id", (req, res) => {
     if (!(parseInt(req.params.id) > 0)) {
         res.status(400).send({ error: "ID must be a positive integer." })
+        return
     }
     let result = games.find(x => x.id === parseInt(req.params.id))
     
     if(typeof(result)==="undefined"){
         res.status(404).send({error:"Game not found."})
+        return
     }
 
     res.send(result)
