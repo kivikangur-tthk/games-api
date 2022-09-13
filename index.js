@@ -3,12 +3,33 @@ const port = 8080
 const swaggerUi = require("swagger-ui-express")
 const swaggerDocument = require("./docs/swagger.json")
 
-app.get("/games",(req,res)=>{
-    res.send(["Witcher 3","Cyberpunk 2077"])
+const games = [
+    { id: 1, name: "Witcher 3", price: 29.99 },
+    { id: 2, name: "Cyberpunk 2077", price: 59.99 },
+    { id: 3, name: "Minecraft", price: 29.99 },
+    { id: 4, name: "Roblox", price: 0 },
+    { id: NaN, name: "Roblox", price: 0 },
+]
+
+app.get("/games", (req, res) => {
+    res.send(games)
 })
 
-app.use("/docs",swaggerUi.serve,swaggerUi.setup(swaggerDocument))
+app.get("/games/:id", (req, res) => {
+    if (!(parseInt(req.params.id) > 0)) {
+        res.status(400).send({ error: "ID must be a positive integer." })
+    }
+    let result = games.find(x => x.id === parseInt(req.params.id))
+    
+    if(typeof(result)==="undefined"){
+        res.status(404).send({error:"Game not found."})
+    }
 
-app.listen(port,()=>{
+    res.send(result)
+})
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+app.listen(port, () => {
     console.log(`API up at: http://localhost:${port}`);
 })
