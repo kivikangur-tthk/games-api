@@ -39,7 +39,17 @@ exports.getById = (req, res) => {
 } // Read
 
 exports.editById = (req, res) => {
-
+    console.log(req.body);
+    Game.findByIdAndUpdate(req.params.id, req.body,{new:true},(err,game)=>{
+        if(err || game===null) {
+            return res.status(400).send({error:"Invalid ID or missing parameters"})
+        } else {
+            console.log(game);
+            return res.status(200)
+                .location(`${getBaseUrl(req)}/games/${game.id}`)
+                .json(game)
+        }
+    })
 } // Update  
       
 exports.deleteById = (req, res) => {
