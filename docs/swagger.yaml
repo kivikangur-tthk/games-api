@@ -116,6 +116,29 @@ paths:
             operationId: id
             summary: Get full details of a game
             description: Returns full details of a game with the given id
+        delete:
+            parameters:
+                -
+                    name: id
+                    description: ID if game to be deleted
+                    schema:
+                        type: string
+                    in: path
+                    required: true
+            responses:
+                '204':
+                    description: Game deleted successfuly
+                '404':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            examples:
+                                Not found:
+                                    value:
+                                        error: Game not found
+                    description: Game not found
+            summary: Remove game with the given Id
 components:
     schemas:
         Error:

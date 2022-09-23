@@ -43,7 +43,14 @@ exports.editById = (req, res) => {
 } // Update  
       
 exports.deleteById = (req, res) => {
-
+    Game.findByIdAndDelete(req.params.id,(err,game)=>{
+        if(err){
+            console.log(err)
+            return res.status(404).send({error:"Game not found"})
+        } else {
+            res.status(204).send()
+        }
+    })
 } // Delete
 
 function getBaseUrl(req) {
