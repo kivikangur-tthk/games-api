@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const { rawListeners } = require("../models/gameModel")
 const Game = mongoose.model("Game")
 
 exports.getAll = (req, res) => {
@@ -12,13 +13,17 @@ exports.getAll = (req, res) => {
 }
 
 exports.createNew = (req, res) => {
-    console.log(req.body);
+    if(!req.body.name || !req.body.price)    {        
+        return res.status(400).send({error:"One or all params are missing"})
+    }
     const new_game = new Game(req.body)
     new_game.save((err,game)=>{
         if(err){
             res.status(400).send(err)
         } else {
-            res.status(201).json(game)
+            res.status(201)
+                .location(`${getBaseUrl(req)}/games/${game.id}`)
+                .json(game)
         }
     })
 } // Create     
@@ -40,3 +45,8 @@ exports.editById = (req, res) => {
 exports.deleteById = (req, res) => {
 
 } // Delete
+
+function getBaseUrl(req) {
+    return (req.connection && req.connection.encrypted ? "https":"http")
+            +`://${req.headers.host}`
+}
