@@ -1,5 +1,6 @@
+require("dotenv").config()
 const app = require("express")()
-const port = 8080
+const port = process.env.PORT
 const swaggerUi = require("swagger-ui-express")
 const yamljs = require("yamljs")
 const swaggerDocument = yamljs.load("./docs/swagger.yaml")
@@ -8,16 +9,21 @@ const mongoose = require("mongoose")
 const Game = require("./models/gameModel")
 const bodyParser = require("body-parser")
 
-mongoose.Promise = global.Promise
-mongoose.connect("mongodb://localhost:27017/gamesApiDb")
 
-app.use(bodyParser.urlencoded({extended:true}))
-app.use(bodyParser.json())
+const seedMongoDB = require("./seedData")
+seedMongoDB().then(()=>{
+    mongoose.Promise = global.Promise
+    mongoose.connect(process.env.MONGODB_URI)
 
-require("./routes/gameRoutes")(app)
+    app.use(bodyParser.urlencoded({extended:true}))
+    app.use(bodyParser.json())
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+    require("./routes/gameRoutes")(app)
 
-app.listen(port, () => {
-    console.log(`API up at: http://localhost:${port}`);
-})
+    app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+    app.listen(port, () => {
+        console.log(`API up at: http://localhost:${port}`);
+    })    
+});
+

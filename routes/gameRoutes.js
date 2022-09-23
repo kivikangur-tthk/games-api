@@ -1,4 +1,4 @@
-const gamesList = require("../controllers/mockGameController")
+const gamesList = require("../controllers/GameController")
 
 module.exports = (app) => {
     app.route("/games")
