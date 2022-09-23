@@ -24,7 +24,13 @@ exports.createNew = (req, res) => {
 } // Create     
 
 exports.getById = (req, res) => {
-
+    Game.findById(req.params.id, (err, game) => {
+        if (err) {
+            res.status(404).send({error:"Game not found"})
+        } else {
+            res.json(game)
+        }
+    })
 } // Read
 
 exports.editById = (req, res) => {
