@@ -16,25 +16,63 @@
                 <th>Price</th>
             </tr>
             <tr v-for="game in games">
-                <td>{{game.name}}</td>
+                <td @click="getGame(game._id)">{{game.name}}</td>
                 <td>{{game.price}}</td>
             </tr>
         </table>
+        <div class="modal fade modal-sm" id="gameInfoModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="gameInfoModal" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Game Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <td>{{gameInModal._id}}</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{gameInModal.name}}</td>
+                    </tr>
+                    <tr>
+                        <th>Price</th>
+                        <td>{{gameInModal.price}}</td>
+                    </tr>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div> 
+            </div>
+          </div>
+        </div>
+        
     </div>
 
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script type="module">
     import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
-
+    
     createApp({
         data() {
         return {
-            games:[]
+            games:[],
+            gameInModal:{}
         }
         },
         async created() {
             this.games = await (await fetch("http://localhost:8080/games")).json()
+        },
+        methods:{
+            getGame: async function(id){
+                this.gameInModal = await (await fetch(`http://localhost:8080/games/${id}`)).json()
+                const gameInfoModal = new bootstrap.Modal(document.getElementById("gameInfoModal"),{})
+                gameInfoModal.show()
+            }
         }
     }).mount('#app')
     </script>
