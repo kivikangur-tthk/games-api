@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <title>Games List</title>
+</head>
+<body>
+    <div id="app">
+        <table id="gamesTable" class="table table-striped table-bordered">
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+            <tr v-for="game in games">
+                <td>{{game.name}}</td>
+                <td>{{game.price}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    createApp({
+        data() {
+        return {
+            games:[]
+        }
+        },
+        async created() {
+            this.games = await (await fetch("http://localhost:8080/games")).json()
+        }
+    }).mount('#app')
+    </script>
+</body>
+</html>

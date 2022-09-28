@@ -1,5 +1,6 @@
 require("dotenv").config()
 const app = require("express")()
+const cors = require("cors")
 const port = process.env.PORT
 const swaggerUi = require("swagger-ui-express")
 const yamljs = require("yamljs")
@@ -14,7 +15,7 @@ const seedMongoDB = require("./seedData")
 seedMongoDB().then(()=>{
     mongoose.Promise = global.Promise
     mongoose.connect(process.env.MONGODB_URI)
-
+    app.use(cors())
     app.use(bodyParser.urlencoded({extended:true}))
     app.use(bodyParser.json())
 
