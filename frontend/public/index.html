@@ -13,19 +13,37 @@
 
 <body>
   <div id="app">
+    <nav>
     <button v-if="token===''" @click="showLogin" href="">Login</button>
-    <span v-else>Logged in <button @click="doLogOff" href="">log off</button></span>
+    <span v-else>Logged in <button @click="doLogOff" href="">log off</button></span>      
+    </nav>
     <table id="gamesTable" class="table table-striped table-bordered">
       <tr>
         <th>Name</th>
         <th>Price</th>
+        <th v-if="isAdmin"></th>
       </tr>
       <tr v-for="game in games">
         <td @click="getGame(game._id)">{{game.name}}</td>
-        <td>{{game.price}}</td>
+        <td>{{game.price}}</td>        
+        <td v-if="isAdmin">
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" :data-bs-target="`#delete${game._id}`" aria-expanded="false" :aria-controls="`delete${game._id}`">
+            Delete
+          </button>
+          <div class="collapse position-relative" :id="`delete${game._id}`">
+            <div class="card card-body position-absolute top-0 start-0">
+              Do you want to delete {{game.name}}?
+              <div class="btn-group btn-group-sm !spacing" role="group" aria-label="Basic example">
+                  <a class="btn btn-success btn-sm " href="#" role="button" data-bs-toggle="collapse" :data-bs-target="`#delete${game._id}`">No</a>
+              <a class="btn btn-danger btn-sm " href="#" role="button">Yes</a>
+              </div>
+
+            </div>
+          </div>
+        </td>
       </tr>
     </table>
-    <div class="modal fade modal-sm" id="gameInfoModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    <div id="gameInfoModal" class="modal fade modal-sm" data-backdrop="static" data-keyboard="false" tabindex="-1"
       aria-labelledby="gameInfoModal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -55,7 +73,7 @@
         </div>
       </div>
     </div>
-    <div class="modal fade modal-sm" id="loginModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    <div id="loginModal" class="modal fade modal-sm" data-backdrop="static" data-keyboard="false" tabindex="-1"
     aria-labelledby="loginModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -66,8 +84,8 @@
         <div class="modal-body">
             <div class="text-danger" v-if="loginError">{{loginError}}</div>
             <form class="form-group" @submit.prevent="doLogIn" >
-               <input v-model="loginName" type="email" class="form-control" placeholder="Email" required>
-               <input v-model="loginPass" type="password" class="form-control" placeholder="Password" required>
+               <input v-model="loginName" type="email" class="form-control" placeholder="Email" autocomplete="username" required>
+               <input v-model="loginPass" type="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
                <input type="submit" class="btn btn-primary" value="Log in">
             </form>
          </div>

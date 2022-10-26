@@ -11,6 +11,12 @@ createApp({
             loginPass:"",
             loginError:"",
             token:"",
+            isAdmin:false
+        }
+    },
+    watch: {
+        token: function(newValue) {
+            this.isAdmin = newValue !== ""
         }
     },
     async created() {
